@@ -6,13 +6,7 @@
     "label": "Heading",
     "importance": "high",
     "optional": true,
-    "tags": [
-      "p",
-      "br",
-      "strong",
-      "em",
-      "code"
-    ]
+    "tags": ["p", "br", "strong", "em", "code"]
   },
   {
     "name": "mode",
@@ -39,13 +33,7 @@
     "label": "Task description",
     "importance": "medium",
     "optional": true,
-    "tags": [
-      "p",
-      "br",
-      "strong",
-      "em",
-      "code"
-    ]
+    "tags": ["p", "br", "strong", "em", "code"]
   },
   {
     "name": "dialogs",
@@ -71,33 +59,35 @@
           "name": "text",
           "type": "text",
           "widget": "html",
-          "tags": [
-            "p",
-            "br",
-            "strong",
-            "em",
-            "code"
-          ],
+          "tags": ["p", "br", "strong", "em", "code"],
           "label": "Text",
           "importance": "high",
           "description": "Hint for the first part of the dialogue",
-          "default": "<p style=\"text-align: center;\"></p>"
+          "default": "<p style=\"text-align: center;\"></p>",
+          "optional": true
+        },
+        {
+          "name": "questionVideo",
+          "type": "text",
+          "optional": true,
+          "description": "Video for the first part of the dialogue"
         },
         {
           "name": "answer",
           "type": "text",
           "widget": "html",
-          "tags": [
-            "p",
-            "br",
-            "strong",
-            "em",
-            "code"
-          ],
+          "tags": ["p", "br", "strong", "em", "code"],
           "label": "Answer",
           "importance": "high",
           "description": "Hint for the second part of the dialogue",
+          "optional": true,
           "default": "<p style=\"text-align: center;\"></p>"
+        },
+        {
+          "name": "answerVideo",
+          "type": "text",
+          "optional": true,
+          "description": "Video for the second part of the dialogue"
         },
         {
           "name": "image",
@@ -467,13 +457,7 @@
         "default": "All progress will be lost. Are you sure you want to start over?",
         "widget": "html",
         "enterMode": "p",
-        "tags": [
-          "strong",
-          "em",
-          "del",
-          "u",
-          "code"
-        ]
+        "tags": ["strong", "em", "del", "u", "code"]
       },
       {
         "name": "cancelLabel",

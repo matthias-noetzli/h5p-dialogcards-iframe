@@ -1,10 +1,10 @@
-import CardManager from './h5p-dialogcards-card-manager';
-import SummaryScreen from './h5p-dialogcards-summary-screen';
+import CardManager from "./h5p-dialogcards-card-manager";
+import SummaryScreen from "./h5p-dialogcards-summary-screen";
 
 const $ = H5P.jQuery;
 const JoubelUI = H5P.JoubelUI;
 
-class Dialogcards extends H5P.EventDispatcher {
+class DialogcardsIframe extends H5P.EventDispatcher {
   /**
    * Initialize module.
    *
@@ -13,11 +13,11 @@ class Dialogcards extends H5P.EventDispatcher {
    * @param {Object} params Parameters.
    * @param {Number} id Content id.
    * @param {Object} contentData Content data, e.g. for saveContentState
-   * @returns {DialogCards} self
+   * @returns {DialogCardsIframe} self
    */
   constructor(params, id, contentData) {
     super();
-    this.idCounter = Dialogcards.idCounter++;
+    this.idCounter = DialogcardsIframe.idCounter++;
     this.contentId = this.id = id;
     this.previousState = contentData.previousState || {};
 
@@ -26,59 +26,64 @@ class Dialogcards extends H5P.EventDispatcher {
     this.contentData = contentData || {};
 
     // Set default behavior.
-    this.params = $.extend({
-      title: '',
-      mode: 'normal',
-      description: "Sit in pairs and make up sentences where you include the expressions below.<br/>Example: I should have said yes, HOWEVER I kept my mouth shut.",
-      next: "Next",
-      prev: "Previous",
-      retry: "Retry",
-      answer: "Turn",
-      correctAnswer: 'I got it right!',
-      incorrectAnswer: 'I got it wrong',
-      round: 'Round @round',
-      cardsLeft: 'Cards left: @number',
-      nextRound: 'Proceed to round @round',
-      startOver: 'Start over',
-      showSummary: 'Next',
-      summary: 'Summary',
-      summaryCardsRight: 'Cards you got right:',
-      summaryCardsWrong: 'Cards you got wrong:',
-      summaryCardsNotShown: 'Cards in pool not shown:',
-      summaryOverallScore: 'Overall Score',
-      summaryCardsCompleted: 'Cards you have completed learning:',
-      summaryCompletedRounds: 'Completed rounds:',
-      summaryAllDone: 'Well done! You have mastered all @cards cards by getting them correct @max times!',
-      progressText: "Card @card of @total",
-      cardFrontLabel: "Card front",
-      cardBackLabel: "Card back",
-      tipButtonLabel: 'Show tip',
-      audioNotSupported: 'Your browser does not support this audio',
-      confirmStartingOver: {
-        header: 'Start over?',
-        body: 'All progress will be lost. Are you sure you want to start over?',
-        cancelLabel: 'Cancel',
-        confirmLabel: 'Start over'
-      },
-      dialogs: [
-        {
-          text: 'Horse',
-          answer: 'Hest'
+    this.params = $.extend(
+      {
+        title: "",
+        mode: "normal",
+        description:
+          "Sit in pairs and make up sentences where you include the expressions below.<br/>Example: I should have said yes, HOWEVER I kept my mouth shut.",
+        next: "Next",
+        prev: "Previous",
+        retry: "Retry",
+        answer: "Turn",
+        correctAnswer: "I got it right!",
+        incorrectAnswer: "I got it wrong",
+        round: "Round @round",
+        cardsLeft: "Cards left: @number",
+        nextRound: "Proceed to round @round",
+        startOver: "Start over",
+        showSummary: "Next",
+        summary: "Summary",
+        summaryCardsRight: "Cards you got right:",
+        summaryCardsWrong: "Cards you got wrong:",
+        summaryCardsNotShown: "Cards in pool not shown:",
+        summaryOverallScore: "Overall Score",
+        summaryCardsCompleted: "Cards you have completed learning:",
+        summaryCompletedRounds: "Completed rounds:",
+        summaryAllDone:
+          "Well done! You have mastered all @cards cards by getting them correct @max times!",
+        progressText: "Card @card of @total",
+        cardFrontLabel: "Card front",
+        cardBackLabel: "Card back",
+        tipButtonLabel: "Show tip",
+        audioNotSupported: "Your browser does not support this audio",
+        confirmStartingOver: {
+          header: "Start over?",
+          body: "All progress will be lost. Are you sure you want to start over?",
+          cancelLabel: "Cancel",
+          confirmLabel: "Start over",
         },
-        {
-          text: 'Cow',
-          answer: 'Ku'
-        }
-      ],
-      behaviour: {
-        enableRetry: true,
-        disableBackwardsNavigation: false,
-        scaleTextNotCard: false,
-        randomCards: false,
-        maxProficiency: 5,
-        quickProgression: false
-      }
-    }, params);
+        dialogs: [
+          {
+            text: "Horse",
+            answer: "Hest",
+          },
+          {
+            text: "Cow",
+            answer: "Ku",
+          },
+        ],
+        behaviour: {
+          enableRetry: true,
+          disableBackwardsNavigation: false,
+          scaleTextNotCard: false,
+          randomCards: false,
+          maxProficiency: 5,
+          quickProgression: false,
+        },
+      },
+      params
+    );
 
     this.cards = [];
 
@@ -92,9 +97,9 @@ class Dialogcards extends H5P.EventDispatcher {
      * @param {jQuery} $container Container.
      */
     this.attach = ($container) => {
-      this.$inner = $container.addClass('h5p-dialogcards');
+      this.$inner = $container.addClass("h5p-dialogcards");
       if (this.params.behaviour.scaleTextNotCard) {
-        $container.addClass('h5p-text-scaling');
+        $container.addClass("h5p-text-scaling");
       }
 
       // Only pass what's necessary
@@ -111,15 +116,20 @@ class Dialogcards extends H5P.EventDispatcher {
         behaviour: {
           scaleTextNotCard: this.params.behaviour.scaleTextNotCard,
           maxProficiency: this.params.behaviour.maxProficiency,
-          quickProgression: this.params.behaviour.quickProgression
+          quickProgression: this.params.behaviour.quickProgression,
         },
-        cardPiles: this.previousState.cardPiles
+        cardPiles: this.previousState.cardPiles,
       };
 
-      this.cardManager = new CardManager(managerParams, this.id, {
-        onCardTurned: this.handleCardTurned,
-        onNextCard: this.nextCard
-      }, this.idCounter);
+      this.cardManager = new CardManager(
+        managerParams,
+        this.id,
+        {
+          onCardTurned: this.handleCardTurned,
+          onNextCard: this.nextCard,
+        },
+        this.idCounter
+      );
 
       this.createDOM(this.round === 0);
 
@@ -132,13 +142,16 @@ class Dialogcards extends H5P.EventDispatcher {
         this.gotoCard(this.previousState.currentCardId);
 
         // Show summary if previous round was completed but next round not started.
-        if (this.params.mode === 'repetition' && this.results.length === this.cardIds.length) {
+        if (
+          this.params.mode === "repetition" &&
+          this.results.length === this.cardIds.length
+        ) {
           this.showSummary(true);
         }
       }
 
       this.updateNavigation();
-      this.trigger('resize');
+      this.trigger("resize");
     };
 
     /**
@@ -146,24 +159,37 @@ class Dialogcards extends H5P.EventDispatcher {
      * @param {boolean} firstCall Is first call?
      */
     this.createDOM = (firstCall) => {
-      this.cardIds = (firstCall && this.previousState.cardIds) ?
-        this.previousState.cardIds :
-        this.cardManager.createSelection();
+      this.cardIds =
+        firstCall && this.previousState.cardIds
+          ? this.previousState.cardIds
+          : this.cardManager.createSelection();
 
       this.cardPoolSize = this.cardPoolSize || this.cardManager.getSize();
 
       if (firstCall === true) {
-        const title = $('<div>' + this.params.title + '</div>').text().trim();
-        this.$header = $((title ? '<div class="h5p-dialogcards-title"><div class="h5p-dialogcards-title-inner">' + this.params.title + '</div></div>' : '') +
-          '<div class="h5p-dialogcards-description">' + this.params.description + '</div>');
+        const title = $("<div>" + this.params.title + "</div>")
+          .text()
+          .trim();
+        this.$header = $(
+          (title
+            ? '<div class="h5p-dialogcards-title"><div class="h5p-dialogcards-title-inner">' +
+              this.params.title +
+              "</div></div>"
+            : "") +
+            '<div class="h5p-dialogcards-description">' +
+            this.params.description +
+            "</div>"
+        );
 
-        this.summaryScreen = new SummaryScreen(this.params, {nextRound: this.nextRound, retry: this.restartRepetition});
+        this.summaryScreen = new SummaryScreen(this.params, {
+          nextRound: this.nextRound,
+          retry: this.restartRepetition,
+        });
       }
 
       if (firstCall === true) {
         this.$cardwrapperSet = this.initCards(this.cardIds);
-      }
-      else {
+      } else {
         this.$cardwrapperSet.detach();
         this.$cardwrapperSet = this.initCards(this.cardIds);
         this.$cardSideAnnouncer.before(this.$cardwrapperSet);
@@ -172,29 +198,30 @@ class Dialogcards extends H5P.EventDispatcher {
       this.$cardwrapperSet.prepend(this.summaryScreen.getDOM());
 
       if (firstCall === true) {
-        this.$cardSideAnnouncer = $('<div>', {
+        this.$cardSideAnnouncer = $("<div>", {
           html: this.params.cardFrontLabel,
-          'class': 'h5p-dialogcards-card-side-announcer',
-          'aria-live': 'polite'
+          class: "h5p-dialogcards-card-side-announcer",
+          "aria-live": "polite",
         });
 
         this.$footer = this.createFooter();
 
-        this.$mainContent = $('<div>')
+        this.$mainContent = $("<div>")
           .append(this.$header)
           .append(this.$cardwrapperSet)
           .append(this.$cardSideAnnouncer)
           .append(this.$footer)
           .appendTo(this.$inner);
 
-        this.on('reset', function () {
+        this.on("reset", function () {
           this.reset();
         });
 
-        this.on('resize', this.resize);
+        this.on("resize", this.resize);
 
         // Set round to previous state if available
-        this.round = (this.previousState.round !== undefined) ? this.previousState.round : 1;
+        this.round =
+          this.previousState.round !== undefined ? this.previousState.round : 1;
       }
     };
 
@@ -204,60 +231,87 @@ class Dialogcards extends H5P.EventDispatcher {
      * @returns {*|jQuery|HTMLElement} Footer element
      */
     this.createFooter = () => {
-      const $footer = $('<nav>', {
-        'class': 'h5p-dialogcards-footer',
-        'role': 'navigation'
+      const $footer = $("<nav>", {
+        class: "h5p-dialogcards-footer",
+        role: "navigation",
       });
 
       const mouseEnter = function ($element, text) {
-        $($element).append('<span class="button-tooltip">' + text + '</span>');
-        $($element).find('.button-tooltip').hide().fadeIn('fast');
+        $($element).append('<span class="button-tooltip">' + text + "</span>");
+        $($element).find(".button-tooltip").hide().fadeIn("fast");
       };
 
       const mouseLeave = function ($element) {
-        $($element).find('.button-tooltip').remove();
+        $($element).find(".button-tooltip").remove();
       };
 
-      if (this.params.mode === 'normal') {
+      if (this.params.mode === "normal") {
         const self = this;
         this.$prev = JoubelUI.createButton({
-          'class': 'h5p-dialogcards-footer-button h5p-dialogcards-prev truncated',
-          'aria-label': this.params.prev,
-        }).click(() => {
-          this.prevCard();
-        }).appendTo($footer);
-        this.$prev.hover(function (event) {mouseEnter(self.$prev, self.params.prev)}, function () {mouseLeave(self.$prev)});
+          class: "h5p-dialogcards-footer-button h5p-dialogcards-prev truncated",
+          "aria-label": this.params.prev,
+        })
+          .click(() => {
+            this.prevCard();
+          })
+          .appendTo($footer);
+        this.$prev.hover(
+          function (event) {
+            mouseEnter(self.$prev, self.params.prev);
+          },
+          function () {
+            mouseLeave(self.$prev);
+          }
+        );
 
         this.$next = JoubelUI.createButton({
-          'class': 'h5p-dialogcards-footer-button h5p-dialogcards-next truncated',
-          'aria-label': this.params.next,
-        }).click(() => {
-          this.nextCard();
-        }).appendTo($footer);
-        this.$next.hover(function (event) {mouseEnter(self.$next, self.params.next)}, function () {mouseLeave(self.$next)});
+          class: "h5p-dialogcards-footer-button h5p-dialogcards-next truncated",
+          "aria-label": this.params.next,
+        })
+          .click(() => {
+            this.nextCard();
+          })
+          .appendTo($footer);
+        this.$next.hover(
+          function (event) {
+            mouseEnter(self.$next, self.params.next);
+          },
+          function () {
+            mouseLeave(self.$next);
+          }
+        );
 
         this.$retry = JoubelUI.createButton({
-          'class': 'h5p-dialogcards-footer-button h5p-dialogcards-retry h5p-dialogcards-disabled',
-          'html': this.params.retry,
-        }).click(() => {
-          this.trigger('reset');
-        }).appendTo($footer);
-        this.$retry.hover(function (event) {mouseEnter(self.$retry, self.params.retry)}, function () {mouseLeave(self.$retry)});
+          class:
+            "h5p-dialogcards-footer-button h5p-dialogcards-retry h5p-dialogcards-disabled",
+          html: this.params.retry,
+        })
+          .click(() => {
+            this.trigger("reset");
+          })
+          .appendTo($footer);
+        this.$retry.hover(
+          function (event) {
+            mouseEnter(self.$retry, self.params.retry);
+          },
+          function () {
+            mouseLeave(self.$retry);
+          }
+        );
 
-        this.$progress = $('<div>', {
-          'id': 'h5p-dialogcards-progress-' + this.idCounter,
-          'class': 'h5p-dialogcards-progress',
-          'aria-live': 'assertive'
+        this.$progress = $("<div>", {
+          id: "h5p-dialogcards-progress-" + this.idCounter,
+          class: "h5p-dialogcards-progress",
+          "aria-live": "assertive",
         }).appendTo($footer);
-      }
-      else {
-        this.$round = $('<div>', {
-          'class': 'h5p-dialogcards-round'
+      } else {
+        this.$round = $("<div>", {
+          class: "h5p-dialogcards-round",
         }).appendTo($footer);
 
-        this.$progress = $('<div>', {
-          'class': 'h5p-dialogcards-cards-left',
-          'aria-live': 'assertive'
+        this.$progress = $("<div>", {
+          class: "h5p-dialogcards-cards-left",
+          "aria-live": "assertive",
         }).appendTo($footer);
       }
 
@@ -272,26 +326,34 @@ class Dialogcards extends H5P.EventDispatcher {
       let relativeHeightCap = 15;
       let height = 0;
 
-      const $currentCardContent = this.cards[this.currentCardId].getDOM().find('.h5p-dialogcards-card-content');
+      const $currentCardContent = this.cards[this.currentCardId]
+        .getDOM()
+        .find(".h5p-dialogcards-card-content");
 
-      this.params.dialogs.forEach(dialog => {
+      this.params.dialogs.forEach((dialog) => {
         if (!dialog.image) {
           return;
         }
 
-        const imageHeight = dialog.image.height / dialog.image.width * $currentCardContent.get(0).getBoundingClientRect().width;
+        const imageHeight =
+          (dialog.image.height / dialog.image.width) *
+          $currentCardContent.get(0).getBoundingClientRect().width;
         if (imageHeight > height) {
           height = imageHeight;
         }
       });
 
       if (height > 0) {
-        let relativeImageHeight = height / parseFloat(this.$inner.css('font-size'));
+        let relativeImageHeight =
+          height / parseFloat(this.$inner.css("font-size"));
         if (relativeImageHeight > relativeHeightCap) {
           relativeImageHeight = relativeHeightCap;
         }
-        this.cards.forEach(card => {
-          card.getImage().parent().css('height', relativeImageHeight + 'em');
+        this.cards.forEach((card) => {
+          card
+            .getImage()
+            .parent()
+            .css("height", relativeImageHeight + "em");
         });
       }
     };
@@ -312,8 +374,8 @@ class Dialogcards extends H5P.EventDispatcher {
         cardIds = H5P.shuffleArray(cardIds);
       }
 
-      const $cardwrapperSet = $('<div>', {
-        'class': 'h5p-dialogcards-cardwrap-set'
+      const $cardwrapperSet = $("<div>", {
+        class: "h5p-dialogcards-cardwrap-set",
       });
 
       for (let i = 0; i < cardIds.length; i++) {
@@ -330,11 +392,15 @@ class Dialogcards extends H5P.EventDispatcher {
 
         // Set current card
         if (i === this.currentCardId) {
-          $cardWrapper.addClass('h5p-dialogcards-current');
+          $cardWrapper.addClass("h5p-dialogcards-current");
           this.$current = $cardWrapper;
         }
 
-        card.addTipToCard($cardWrapper.find('.h5p-dialogcards-card-content'), 'front', i);
+        card.addTipToCard(
+          $cardWrapper.find(".h5p-dialogcards-card-content"),
+          "front",
+          i
+        );
 
         $cardwrapperSet.append($cardWrapper);
       }
@@ -349,12 +415,17 @@ class Dialogcards extends H5P.EventDispatcher {
      */
     this.handleCardTurned = (turned) => {
       // a11y notification
-      this.$cardSideAnnouncer.html(turned ? this.params.cardFrontLabel : this.params.cardBackLabel);
+      this.$cardSideAnnouncer.html(
+        turned ? this.params.cardFrontLabel : this.params.cardBackLabel
+      );
 
       // retry button
-      if (this.params.behaviour.enableRetry && this.currentCardId + 1 === this.cardIds.length) {
+      if (
+        this.params.behaviour.enableRetry &&
+        this.currentCardId + 1 === this.cardIds.length
+      ) {
         if (this.$retry) {
-          this.$retry.removeClass('h5p-dialogcards-disabled');
+          this.$retry.removeClass("h5p-dialogcards-disabled");
           this.truncateRetryButton();
         }
       }
@@ -364,39 +435,47 @@ class Dialogcards extends H5P.EventDispatcher {
      * Update navigation text and show or hide buttons.
      */
     this.updateNavigation = () => {
-      if (this.params.mode === 'normal') {
+      if (this.params.mode === "normal") {
         // Final card
         if (this.getCurrentSelectionIndex() < this.cardIds.length - 1) {
-          this.$next.removeClass('h5p-dialogcards-disabled');
-          this.$retry.addClass('h5p-dialogcards-disabled');
-        }
-        else {
-          this.$next.addClass('h5p-dialogcards-disabled');
+          this.$next.removeClass("h5p-dialogcards-disabled");
+          this.$retry.addClass("h5p-dialogcards-disabled");
+        } else {
+          this.$next.addClass("h5p-dialogcards-disabled");
         }
 
         // First card
-        if (this.currentCardId > 0 && !this.params.behaviour.disableBackwardsNavigation) {
-          this.$prev.removeClass('h5p-dialogcards-disabled');
-        }
-        else {
-          this.$prev.addClass('h5p-dialogcards-disabled');
+        if (
+          this.currentCardId > 0 &&
+          !this.params.behaviour.disableBackwardsNavigation
+        ) {
+          this.$prev.removeClass("h5p-dialogcards-disabled");
+        } else {
+          this.$prev.addClass("h5p-dialogcards-disabled");
         }
 
-        this.$progress.text(this.params.progressText
-          .replace('@card', this.getCurrentSelectionIndex() + 1)
-          .replace('@total', this.cardIds.length)
+        this.$progress.text(
+          this.params.progressText
+            .replace("@card", this.getCurrentSelectionIndex() + 1)
+            .replace("@total", this.cardIds.length)
         );
 
         // Looks strange, but the Ids get mixed up elsewhere
-        this.cards[this.findCardPosition(this.cards[this.currentCardId].id)].resizeOverflowingText();
-      }
-      else {
-        this.$round.text(this.params.round.replace('@round', this.round));
+        this.cards[
+          this.findCardPosition(this.cards[this.currentCardId].id)
+        ].resizeOverflowingText();
+      } else {
+        this.$round.text(this.params.round.replace("@round", this.round));
         const selectionIndex = this.getCurrentSelectionIndex();
-        this.$progress.text(this.params.cardsLeft.replace('@number', this.cardIds.length - selectionIndex));
+        this.$progress.text(
+          this.params.cardsLeft.replace(
+            "@number",
+            this.cardIds.length - selectionIndex
+          )
+        );
       }
 
-      this.trigger('resize');
+      this.trigger("resize");
     };
 
     /**
@@ -405,11 +484,13 @@ class Dialogcards extends H5P.EventDispatcher {
      */
     this.showSummary = (previousState = false) => {
       // Update piles and retrieve the new pile sizes
-      const newPileSizes = (previousState) ?
-        this.cardManager.getPileSizes() :
-        this.cardManager.updatePiles(this.results);
+      const newPileSizes = previousState
+        ? this.cardManager.getPileSizes()
+        : this.cardManager.updatePiles(this.results);
 
-      const right = this.results.filter(result => result.result === true).length;
+      const right = this.results.filter(
+        (result) => result.result === true
+      ).length;
       const wrong = this.results.length - right;
       const notShown = this.cardPoolSize - right - wrong;
       const completed = newPileSizes.slice(-1)[0];
@@ -419,48 +500,50 @@ class Dialogcards extends H5P.EventDispatcher {
         round: this.round,
         results: [
           {
-            field: 'h5p-dialogcards-round-cards-right',
-            score: {value: right, max: wrong + right}
+            field: "h5p-dialogcards-round-cards-right",
+            score: { value: right, max: wrong + right },
           },
           {
-            field: 'h5p-dialogcards-round-cards-wrong',
-            score: {value: wrong, max: wrong + right}
+            field: "h5p-dialogcards-round-cards-wrong",
+            score: { value: wrong, max: wrong + right },
           },
           {
-            field: 'h5p-dialogcards-round-cards-not-shown',
-            score: {value: notShown}
+            field: "h5p-dialogcards-round-cards-not-shown",
+            score: { value: notShown },
           },
           {
-            field: 'h5p-dialogcards-overall-cards-completed',
-            score: {value: completed, max: this.cardPoolSize}
+            field: "h5p-dialogcards-overall-cards-completed",
+            score: { value: completed, max: this.cardPoolSize },
           },
           {
-            field: 'h5p-dialogcards-overall-completed-rounds',
-            score: {value: this.round}
-          }
-        ]
+            field: "h5p-dialogcards-overall-completed-rounds",
+            score: { value: this.round },
+          },
+        ],
       };
 
       if (done) {
         summary.done = true;
         summary.message = this.params.summaryAllDone
-          .replace('@cards', this.cardPoolSize)
-          .replace('@max', this.params.behaviour.maxProficiency);
+          .replace("@cards", this.cardPoolSize)
+          .replace("@max", this.params.behaviour.maxProficiency);
       }
 
       this.summaryScreen.update(summary);
       this.summaryScreen.show();
       this.hideCards();
 
-      this.trigger('resize');
+      this.trigger("resize");
     };
 
     /**
      * Show main content.
      */
     this.showCards = () => {
-      this.$cardwrapperSet.find('.h5p-dialogcards-cardwrap').removeClass('h5p-dialogcards-gone');
-      this.$footer.removeClass('h5p-dialogcards-gone');
+      this.$cardwrapperSet
+        .find(".h5p-dialogcards-cardwrap")
+        .removeClass("h5p-dialogcards-gone");
+      this.$footer.removeClass("h5p-dialogcards-gone");
       this.cardsShown = true;
     };
 
@@ -468,8 +551,10 @@ class Dialogcards extends H5P.EventDispatcher {
      * Hide main content.
      */
     this.hideCards = () => {
-      this.$cardwrapperSet.find('.h5p-dialogcards-cardwrap').addClass('h5p-dialogcards-gone');
-      this.$footer.addClass('h5p-dialogcards-gone');
+      this.$cardwrapperSet
+        .find(".h5p-dialogcards-cardwrap")
+        .addClass("h5p-dialogcards-gone");
+      this.$footer.addClass("h5p-dialogcards-gone");
       this.cardsShown = false;
     };
 
@@ -479,7 +564,7 @@ class Dialogcards extends H5P.EventDispatcher {
      * @param {object} [result] Optional result of repetition mode.
      */
     this.nextCard = (result) => {
-      if (typeof(result) !== 'undefined') {
+      if (typeof result !== "undefined") {
         this.results.push(result);
       }
 
@@ -487,8 +572,8 @@ class Dialogcards extends H5P.EventDispatcher {
 
       // On final card
       if (this.cardIds.length - this.getCurrentSelectionIndex() === 1) {
-        if (this.params.mode === 'repetition') {
-          this.$progress.text(this.params.cardsLeft.replace('@number', 0));
+        if (this.params.mode === "repetition") {
+          this.$progress.text(this.params.cardsLeft.replace("@number", 0));
           this.cards[this.currentCardId].showSummaryButton(this.showSummary);
         }
         return;
@@ -537,16 +622,18 @@ class Dialogcards extends H5P.EventDispatcher {
       // Put at appropriate position.
       if (index === undefined) {
         $node.appendTo(this.$cardwrapperSet);
-      }
-      else if (index === 0) {
+      } else if (index === 0) {
         this.$cardwrapperSet.prepend($node);
-      }
-      else {
+      } else {
         this.$cardwrapperSet.children().eq(index).after($node);
       }
 
       // Add hints
-      card.addTipToCard($node.find('.h5p-dialogcards-card-content'), 'front', index);
+      card.addTipToCard(
+        $node.find(".h5p-dialogcards-card-content"),
+        "front",
+        index
+      );
     };
 
     /**
@@ -561,7 +648,7 @@ class Dialogcards extends H5P.EventDispatcher {
       // Stop action on current card
       const currentCard = this.cards[this.currentCardId];
       currentCard.stopAudio();
-      currentCard.getDOM().removeClass('h5p-dialogcards-current');
+      currentCard.getDOM().removeClass("h5p-dialogcards-current");
 
       // Get card positions to check for being loaded
       const checkLoaded = [];
@@ -574,10 +661,9 @@ class Dialogcards extends H5P.EventDispatcher {
       }
 
       // Load and insert target card, predecessor and successor if required.
-      checkLoaded.forEach(position => {
+      checkLoaded.forEach((position) => {
         const loadedPosition = this.findCardPosition(this.cardIds[position]);
         if (loadedPosition === undefined) {
-
           // Card has not been loaded. Load now.
           const card = this.getCard(this.cardIds[position]);
           card.setProgressText(position + 1, this.cardIds.length);
@@ -603,13 +689,12 @@ class Dialogcards extends H5P.EventDispatcher {
       // Set classes for card order/display
       this.cards.forEach((card, index) => {
         if (index < targetPosition) {
-          card.getDOM().addClass('h5p-dialogcards-previous');
-        }
-        else {
-          card.getDOM().removeClass('h5p-dialogcards-previous');
+          card.getDOM().addClass("h5p-dialogcards-previous");
+        } else {
+          card.getDOM().removeClass("h5p-dialogcards-previous");
 
           if (index === targetPosition) {
-            card.getDOM().addClass('h5p-dialogcards-current');
+            card.getDOM().addClass("h5p-dialogcards-current");
           }
         }
       });
@@ -630,8 +715,7 @@ class Dialogcards extends H5P.EventDispatcher {
      * Show all audio buttons
      */
     this.showAllAudio = () => {
-      this.$cardwrapperSet.find('.h5p-audio-inner')
-        .removeClass('hide');
+      this.$cardwrapperSet.find(".h5p-audio-inner").removeClass("hide");
     };
 
     this.restartRepetition = () => {
@@ -658,7 +742,7 @@ class Dialogcards extends H5P.EventDispatcher {
         this.cards[this.currentCardId].setCardFocus(true);
       }
 
-      this.trigger('resize');
+      this.trigger("resize");
     };
 
     /**
@@ -669,19 +753,21 @@ class Dialogcards extends H5P.EventDispatcher {
       this.cards[this.currentCardId].stopAudio(this.$current.index());
 
       // Turn all cards to front
-      this.cards.forEach(card => {
+      this.cards.forEach((card) => {
         card.reset();
       });
 
       // Show first card
       this.currentCardId = 0;
-      if (this.params.mode === 'normal') {
-        this.cards[this.currentCardId].getDOM().addClass('h5p-dialogcards-current');
+      if (this.params.mode === "normal") {
+        this.cards[this.currentCardId]
+          .getDOM()
+          .addClass("h5p-dialogcards-current");
       }
       this.updateNavigation();
 
       if (this.$retry) {
-        this.$retry.addClass('h5p-dialogcards-disabled');
+        this.$retry.addClass("h5p-dialogcards-disabled");
       }
       this.showAllAudio();
 
@@ -695,28 +781,39 @@ class Dialogcards extends H5P.EventDispatcher {
     this.resize = () => {
       let maxHeight = 0;
       this.updateImageSize();
-      if (!this.params.behaviour.scaleTextNotCard && this.cardsShown !== false) {
+      if (
+        !this.params.behaviour.scaleTextNotCard &&
+        this.cardsShown !== false
+      ) {
         this.determineCardSizes();
       }
 
       // Reset card-wrapper-set height
-      this.$cardwrapperSet.css('height', 'auto');
+      this.$cardwrapperSet.css("height", "auto");
 
       //Find max required height for all cards
-      this.$cardwrapperSet.children(':not(.h5p-dialogcards-gone)').each( function () {
-        const wrapperHeight = $(this).css('height', 'initial').outerHeight();
-        $(this).css('height', 'inherit');
-        maxHeight = wrapperHeight > maxHeight ? wrapperHeight : maxHeight;
+      this.$cardwrapperSet
+        .children(":not(.h5p-dialogcards-gone)")
+        .each(function () {
+          const wrapperHeight = $(this).css("height", "initial").outerHeight();
+          $(this).css("height", "inherit");
+          maxHeight = wrapperHeight > maxHeight ? wrapperHeight : maxHeight;
 
-        // Check height
-        if (!$(this).next('.h5p-dialogcards-cardwrap').length) {
-          const initialHeight = $(this).find('.h5p-dialogcards-cardholder').css('height', 'initial').outerHeight();
-          maxHeight = initialHeight > maxHeight ? initialHeight : maxHeight;
-          $(this).find('.h5p-dialogcards-cardholder').css('height', 'inherit');
-        }
-      });
-      const relativeMaxHeight = maxHeight / parseFloat(this.$cardwrapperSet.css('font-size'));
-      this.$cardwrapperSet.css('height', relativeMaxHeight + 'em');
+          // Check height
+          if (!$(this).next(".h5p-dialogcards-cardwrap").length) {
+            const initialHeight = $(this)
+              .find(".h5p-dialogcards-cardholder")
+              .css("height", "initial")
+              .outerHeight();
+            maxHeight = initialHeight > maxHeight ? initialHeight : maxHeight;
+            $(this)
+              .find(".h5p-dialogcards-cardholder")
+              .css("height", "inherit");
+          }
+        });
+      const relativeMaxHeight =
+        maxHeight / parseFloat(this.$cardwrapperSet.css("font-size"));
+      this.$cardwrapperSet.css("height", relativeMaxHeight + "em");
       this.scaleToFitHeight();
       this.truncateRetryButton();
 
@@ -735,7 +832,7 @@ class Dialogcards extends H5P.EventDispatcher {
       }
 
       // Go through each card
-      this.$cardwrapperSet.children(':visible').each(function (i) {
+      this.$cardwrapperSet.children(":visible").each(function (i) {
         const cardId = self.cards[i].id;
 
         if (self.cardSizeDetermined.indexOf(cardId) !== -1) {
@@ -744,34 +841,56 @@ class Dialogcards extends H5P.EventDispatcher {
         self.cardSizeDetermined.push(cardId);
 
         // Here "this" references the jQuery object
-        const $content = $('.h5p-dialogcards-card-content', this);
-        const $text = $('.h5p-dialogcards-card-text-inner-content', $content);
+        const $content = $(".h5p-dialogcards-card-content", this);
+        const $innerContent = $(
+          ".h5p-dialogcards-card-text-inner-content",
+          $content
+        );
+        const $text = $("h5p-dialogcards-card-text");
 
+        const currentCard = self.cards[i];
         // Grab size with text
-        const textHeight = $text[0].getBoundingClientRect().height;
+        let textHeight = currentCard.getText()
+          ? $text[0].getBoundingClientRect().height
+          : 0;
+        if (currentCard.hasQuestionVideo()) {
+          const questionVideoHeight =
+            ($text[0].getBoundingClientRect().width / 16) * 9;
+          textHeight += questionVideoHeight;
+        }
 
         // Change to answer
-        const currentCard = self.cards[i];
         currentCard.changeText(currentCard.getAnswer());
 
         // Grab size with answer
-        const answerHeight = $text[0].getBoundingClientRect().height;
+        let answerHeight = currentCard.getAnswer()
+          ? $text[0].getBoundingClientRect().height
+          : 0;
+        if (currentCard.hasAnswerVideo()) {
+          const answerVideoHeight =
+            ($text[0].getBoundingClientRect().width / 16) * 9;
+          answerHeight += answerVideoHeight;
+        }
 
         // Use highest
-        let useHeight = (textHeight > answerHeight ? textHeight : answerHeight);
+        let useHeight = textHeight > answerHeight ? textHeight : answerHeight;
 
         // Min. limit
-        const minHeight = parseFloat($text.parent().parent().css('minHeight'));
+        const minHeight = parseFloat(
+          $innerContent.parent().parent().css("minHeight")
+        );
         if (useHeight < minHeight) {
-          useHeight =  minHeight;
+          useHeight = minHeight;
         }
 
         // Convert to em
-        const fontSize = parseFloat($content.css('fontSize'));
+        const fontSize = parseFloat($content.css("fontSize"));
         useHeight /= fontSize;
 
         // Set height
-        $text.parent().css('height', useHeight + 'em');
+        $innerContent.parent().css("height", useHeight + "em");
+        $innerContent.parent().attr("data-text-height", textHeight);
+        $innerContent.parent().attr("data-answer-height", answerHeight);
 
         // Change back to text
         currentCard.changeText(currentCard.getText());
@@ -782,70 +901,82 @@ class Dialogcards extends H5P.EventDispatcher {
      * Scales the card contents.
      */
     this.scaleToFitHeight = () => {
-      if (!this.$cardwrapperSet || !this.$cardwrapperSet.is(':visible') || !this.params.behaviour.scaleTextNotCard) {
+      if (
+        !this.$cardwrapperSet ||
+        !this.$cardwrapperSet.is(":visible") ||
+        !this.params.behaviour.scaleTextNotCard
+      ) {
         return;
       }
 
       // Resize font size to fit inside CP
-      if (this.$inner.parents('.h5p-course-presentation').length) {
+      if (this.$inner.parents(".h5p-course-presentation").length) {
         let $parentContainer = this.$inner.parent();
-        if (this.$inner.parents('.h5p-popup-container').length) {
-          $parentContainer = this.$inner.parents('.h5p-popup-container');
+        if (this.$inner.parents(".h5p-popup-container").length) {
+          $parentContainer = this.$inner.parents(".h5p-popup-container");
         }
-        const containerHeight = $parentContainer.get(0).getBoundingClientRect().height;
+        const containerHeight = $parentContainer
+          .get(0)
+          .getBoundingClientRect().height;
         const getContentHeight = () => {
           let contentHeight = 0;
           this.$inner.children().each(function () {
             // Here "this" references the jQuery object
             const $child = $(this);
-            contentHeight += this.getBoundingClientRect().height +
-            parseFloat($child.css('margin-top')) + parseFloat($child.css('margin-bottom'));
+            contentHeight +=
+              this.getBoundingClientRect().height +
+              parseFloat($child.css("margin-top")) +
+              parseFloat($child.css("margin-bottom"));
           });
           return contentHeight;
         };
         let contentHeight = getContentHeight();
-        const parentFontSize = parseFloat(this.$inner.parent().css('font-size'));
-        let newFontSize = parseFloat(this.$inner.css('font-size'));
+        const parentFontSize = parseFloat(
+          this.$inner.parent().css("font-size")
+        );
+        let newFontSize = parseFloat(this.$inner.css("font-size"));
 
         // Decrease font size
         if (containerHeight < contentHeight) {
           while (containerHeight < contentHeight) {
-            newFontSize -= Dialogcards.SCALEINTERVAL;
+            newFontSize -= DialogcardsIframe.SCALEINTERVAL;
 
             // Cap at min font size
-            if (newFontSize < Dialogcards.MINSCALE) {
+            if (newFontSize < DialogcardsIframe.MINSCALE) {
               break;
             }
 
             // Set relative font size to scale with full screen.
-            this.$inner.css('font-size', (newFontSize / parentFontSize) + 'em');
+            this.$inner.css("font-size", newFontSize / parentFontSize + "em");
             contentHeight = getContentHeight();
           }
-        }
-        else { // Increase font size
+        } else {
+          // Increase font size
           let increaseFontSize = true;
           while (increaseFontSize) {
-            newFontSize += Dialogcards.SCALEINTERVAL;
+            newFontSize += DialogcardsIframe.SCALEINTERVAL;
 
             // Cap max font size
-            if (newFontSize > Dialogcards.MAXSCALE) {
+            if (newFontSize > DialogcardsIframe.MAXSCALE) {
               increaseFontSize = false;
               break;
             }
 
             // Set relative font size to scale with full screen.
             let relativeFontSize = newFontSize / parentFontSize;
-            this.$inner.css('font-size', relativeFontSize + 'em');
+            this.$inner.css("font-size", relativeFontSize + "em");
             contentHeight = getContentHeight();
             if (containerHeight <= contentHeight) {
               increaseFontSize = false;
-              relativeFontSize = (newFontSize - Dialogcards.SCALEINTERVAL) / parentFontSize;
-              this.$inner.css('font-size', relativeFontSize + 'em');
+              relativeFontSize =
+                (newFontSize - DialogcardsIframe.SCALEINTERVAL) /
+                parentFontSize;
+              this.$inner.css("font-size", relativeFontSize + "em");
             }
           }
         }
-      }
-      else { // Resize mobile view
+      } else {
+        // Resize mobile view
         this.cards[this.currentCardId].resizeOverflowingText();
       }
     };
@@ -859,26 +990,30 @@ class Dialogcards extends H5P.EventDispatcher {
       }
 
       // Reset button to full size
-      this.$retry.removeClass('truncated');
+      this.$retry.removeClass("truncated");
       this.$retry.html(this.params.retry);
 
       // Measure button
       const maxWidthPercentages = 0.3;
-      const retryWidth = this.$retry.get(0).getBoundingClientRect().width +
-          parseFloat(this.$retry.css('margin-left')) + parseFloat(this.$retry.css('margin-right'));
-      const retryWidthPercentage = retryWidth / this.$retry.parent().get(0).getBoundingClientRect().width;
+      const retryWidth =
+        this.$retry.get(0).getBoundingClientRect().width +
+        parseFloat(this.$retry.css("margin-left")) +
+        parseFloat(this.$retry.css("margin-right"));
+      const retryWidthPercentage =
+        retryWidth / this.$retry.parent().get(0).getBoundingClientRect().width;
 
       // Truncate button
       if (retryWidthPercentage > maxWidthPercentages) {
-        this.$retry.addClass('truncated');
-        this.$retry.html('');
+        this.$retry.addClass("truncated");
+        this.$retry.html("");
       }
     };
 
     /**
      * Retrieve index of card in selection, not loaded cards.
      */
-    this.getCurrentSelectionIndex = () => this.cardIds.indexOf(this.cards[this.currentCardId].id);
+    this.getCurrentSelectionIndex = () =>
+      this.cardIds.indexOf(this.cards[this.currentCardId].id);
 
     /**
      * Get the content type title.
@@ -886,7 +1021,13 @@ class Dialogcards extends H5P.EventDispatcher {
      * @return {string} title.
      */
     this.getTitle = () => {
-      return H5P.createTitle((this.contentData && this.contentData.metadata && this.contentData.metadata.title) ? this.contentData.metadata.title : 'Dialog Cards');
+      return H5P.createTitle(
+        this.contentData &&
+          this.contentData.metadata &&
+          this.contentData.metadata.title
+          ? this.contentData.metadata.title
+          : "Dialog Cards"
+      );
     };
 
     /**
@@ -900,12 +1041,12 @@ class Dialogcards extends H5P.EventDispatcher {
 
       return this.isProgressStarted()
         ? {
-          cardPiles: this.cardManager.getPiles(),
-          cardIds: this.cardIds,
-          round: this.round,
-          currentCardId: this.getCurrentSelectionIndex(),
-          results: this.results
-        }
+            cardPiles: this.cardManager.getPiles(),
+            cardIds: this.cardIds,
+            round: this.round,
+            currentCardId: this.getCurrentSelectionIndex(),
+            results: this.results,
+          }
         : undefined;
     };
 
@@ -915,11 +1056,13 @@ class Dialogcards extends H5P.EventDispatcher {
      * @returns {boolean} True if progress has been started, false otherwise.
      */
     this.isProgressStarted = () => {
-      return !H5P.isEmpty(this.previousState)
-          || this.getCurrentSelectionIndex() !== 0
-          || this.results.length !== 0
-          || this.round !== 1;
-    }
+      return (
+        !H5P.isEmpty(this.previousState) ||
+        this.getCurrentSelectionIndex() !== 0 ||
+        this.results.length !== 0 ||
+        this.round !== 1
+      );
+    };
 
     /**
      * Resets task to the initial state
@@ -927,20 +1070,21 @@ class Dialogcards extends H5P.EventDispatcher {
      * This prevents loss of focus if reset from within content
      */
     this.resetTask = (moveFocus = false) => {
-      if (this.cardManager) { // Check if initialized
+      if (this.cardManager) {
+        // Check if initialized
         this.previousState = {};
         this.round = 0;
         this.nextRound(moveFocus); // Also calls reset(), which takes care about resetting everything else
       }
-    }
+    };
   }
 }
 
-Dialogcards.idCounter = 0;
+DialogcardsIframe.idCounter = 0;
 
 // Constants
-Dialogcards.SCALEINTERVAL = 0.2;
-Dialogcards.MAXSCALE = 16;
-Dialogcards.MINSCALE = 4;
+DialogcardsIframe.SCALEINTERVAL = 0.2;
+DialogcardsIframe.MAXSCALE = 16;
+DialogcardsIframe.MINSCALE = 4;
 
-export default Dialogcards;
+export default DialogcardsIframe;

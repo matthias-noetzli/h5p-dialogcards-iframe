@@ -1,4 +1,4 @@
-import Card from './h5p-dialogcards-card';
+import Card from "./h5p-dialogcards-card";
 
 class CardPool {
   /**
@@ -15,7 +15,6 @@ class CardPool {
     this.callbacks = callbacks;
     this.idCounter = idCounter;
     this.cards = [];
-
     this.params.dialogs.forEach((dialog, index) => {
       dialog.id = index;
       this.cards.push(index);
@@ -35,7 +34,7 @@ class CardPool {
     }
 
     // Replace id with card object if necessary.
-    if (typeof this.cards[id] === 'number') {
+    if (typeof this.cards[id] === "number") {
       this.loadCard(id);
     }
 
@@ -47,7 +46,7 @@ class CardPool {
    *
    * @return {object[]} Card ids.
    */
-  getCardIds()  {
+  getCardIds() {
     return this.cards.map((card, index) => index);
   }
 
@@ -61,17 +60,17 @@ class CardPool {
       return;
     }
 
-    if (typeof this.cards[id] === 'number') {
+    if (typeof this.cards[id] === "number") {
       this.cards[id] = new Card(
         this.params.dialogs[id],
         this.params,
         id,
         this.contentId,
         this.callbacks,
-        this.idCounter);
+        this.idCounter
+      );
     }
   }
-
 }
 
 export default CardPool;

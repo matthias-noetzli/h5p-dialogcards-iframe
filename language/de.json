@@ -34,8 +34,16 @@
             "description": "Hinweis für den ersten Teil des Dialogs"
           },
           {
+            "label": "Vorderseite Video",
+            "description": "Video für den ersten Teil des Dialogs"
+          },
+          {
             "label": "Rückseite",
             "description": "Hinweis für den zweiten Teil des Dialogs"
+          },
+          {
+            "label": "Rückseite Video",
+            "description": "Video für den zweiten Teil des Dialogs"
           },
           {
             "label": "Bild",

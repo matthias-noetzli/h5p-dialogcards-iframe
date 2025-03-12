@@ -1,5 +1,5 @@
 {
-  "title": "Dialog Cards",
+  "title": "Dialog Cards Iframe",
   "description": "Makes it possible to create learning tasks for your site visitors.",
   "majorVersion": 1,
   "minorVersion": 9,
@@ -7,22 +7,20 @@
   "runnable": 1,
   "author": "Joubel",
   "license": "MIT",
-  "machineName": "H5P.Dialogcards",
+  "machineName": "H5P.DialogcardsIframe",
   "coreApi": {
     "majorVersion": 1,
     "minorVersion": 26
   },
-  "embedTypes": [
-    "iframe"
-  ],
+  "embedTypes": ["iframe"],
   "preloadedCss": [
     {
-      "path": "dist/h5p-dialogcards.css"
+      "path": "dist/h5p-dialogcards-iframe.css"
     }
   ],
   "preloadedJs": [
     {
-      "path": "dist/h5p-dialogcards.js"
+      "path": "dist/h5p-dialogcards-iframe.js"
     }
   ],
   "preloadedDependencies": [

@@ -34,7 +34,15 @@
             "description": "Hint for the first part of the dialogue"
           },
           {
+            "label": "Question Video",
+            "description": "Hint for the first part of the dialogue"
+          },
+          {
             "label": "Answer",
+            "description": "Hint for the second part of the dialogue"
+          },
+          {
+            "label": "Answer Video",
             "description": "Hint for the second part of the dialogue"
           },
           {
